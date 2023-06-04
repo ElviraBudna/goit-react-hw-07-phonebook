@@ -1,11 +1,10 @@
-import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteButton, Container, Text } from './ContactItem.styled';
 import { useEffect } from 'react';
 import { deleteContact, fetchContacts } from 'redux/operations';
 import { getIsLoading, getError, getVisibleContacts } from 'redux/selectors';
 
-export default function ContactItem({ contact }) {
+export default function ContactItem() {
   const isLoading = useSelector(getIsLoading);
   const error = useSelector(getError);
   const visibleContacts = useSelector(getVisibleContacts);
@@ -16,7 +15,6 @@ export default function ContactItem({ contact }) {
   }, [dispatch]);
 
   const handleDelete = contactId => dispatch(deleteContact(contactId));
-  toast.error('One contact has been deleted');
 
   return (
     <Container>
