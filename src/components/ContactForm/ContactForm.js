@@ -46,8 +46,17 @@ export function ContactForm() {
     }
 
     const data = { name, number };
-    dispatch(addContact(data));
-    toast.success(`Contact ${name} added successfully`);
+    dispatch(addContact(data))
+      .unwrap()
+      .then(originalPromiseResult => {
+        // handle result here
+        toast.success(`Contact ${name} added successfully`);
+      })
+      .catch(rejectedValueOrSerializedError => {
+        // handle error here
+        toast.error(`Error`);
+      });
+    // toast.success(`Contact ${name} added successfully`);
 
     reset();
   };
