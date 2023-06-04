@@ -12,7 +12,7 @@ export default function Filter() {
         name="filter"
         placeholder="Enter name of contact"
         onChange={e => {
-          dispatch(filterChange(e.target.value));
+          dispatch(filterChange(e.target.value.toLowerCase()));
         }}
       />
     </FilterContainer>

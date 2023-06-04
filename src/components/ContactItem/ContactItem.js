@@ -1,44 +1,37 @@
+import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteButton, Container, Text } from './ContactItem.styled';
-import { getContacts, getFilter } from 'redux/selectors';
-import { deleteContact } from 'redux/contactsSlice';
+import { useEffect } from 'react';
+import { deleteContact, fetchContacts } from 'redux/operations';
+import { getIsLoading, getError, getVisibleContacts } from 'redux/selectors';
 
-export default function ContactItem() {
-  const { contacts } = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const searchContact = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase().trim())
-  );
+export default function ContactItem({ contact }) {
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
+  const visibleContacts = useSelector(getVisibleContacts);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  const handleDelete = contactId => dispatch(deleteContact(contactId));
+  toast.error('One contact has been deleted');
+
   return (
     <Container>
-      {filter === ''
-        ? contacts.map(contact => (
-            <li key={contact.id}>
-              <Text>
-                {contact.name}: <span>{contact.number}</span>
-              </Text>
-              <DeleteButton
-                type="button"
-                onClick={() => dispatch(deleteContact(contact.id))}
-              >
-                Delete
-              </DeleteButton>
-            </li>
-          ))
-        : searchContact.map(contact => (
-            <li key={contact.id}>
-              <Text>
-                {contact.name}: <span>{contact.number}</span>
-              </Text>
-              <DeleteButton
-                type="button"
-                onClick={() => dispatch(deleteContact(contact.id))}
-              >
-                Delete
-              </DeleteButton>
-            </li>
-          ))}
+      {isLoading && !error && <b>Loading...</b>}
+      {visibleContacts.map(({ id, name, number }) => (
+        <li key={id}>
+          <Text>
+            {name}: <span>{number}</span>
+          </Text>
+
+          <DeleteButton type="button" onClick={() => handleDelete(id)}>
+            Delete
+          </DeleteButton>
+        </li>
+      ))}
     </Container>
   );
 }

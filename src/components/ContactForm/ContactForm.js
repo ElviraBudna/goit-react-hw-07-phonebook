@@ -1,5 +1,9 @@
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/operations';
+import { getContacts } from 'redux/selectors';
 import {
   Form,
   TitleForm,
@@ -8,15 +12,12 @@ import {
   Input,
   Label,
 } from './ContactForm.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContacts } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
 
 export function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
-  const { contacts } = useSelector(getContacts);
+  const contacts = useSelector(getContacts);
 
   const handleInputChange = e => {
     const { name, value } = e.currentTarget;
@@ -36,9 +37,17 @@ export function ContactForm() {
   const handleFormSubmit = e => {
     e.preventDefault();
 
-    contacts.some(contact => contact.name === name)
-      ? alert(`${name} is already in contacts!`)
-      : dispatch(addContacts({ name, number, id: nanoid() }));
+    const checkName = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+    if (checkName) {
+      toast.error(`${name} is already in contacts`);
+      return;
+    }
+
+    const data = { name, number };
+    dispatch(addContact(data));
+    toast.success(`Contact ${name} added successfully`);
 
     reset();
   };
