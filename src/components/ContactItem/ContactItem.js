@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { DeleteButton, Container, Text } from './ContactItem.styled';
-import { useEffect } from 'react';
-import { deleteContact, fetchContacts } from 'redux/operations';
+// import { useEffect } from 'react';
+import { deleteContact } from 'redux/operations';
 
 export default function ContactItem({ contact }) {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchContacts());
+  // }, [dispatch]);
 
   const handleDelete = contactId =>
     dispatch(deleteContact(contactId))
